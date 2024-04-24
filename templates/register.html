@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <h1 class="header">Registration</h1>
+    <form class="registration" action="/register" method="post">
+        <div class="mb-3">
+            <div class="inputGroup login">
+                <input type="text" autofocus autocomplete="off" id="username" name="username" required="">
+                <label for="username">Username</label>
+            </div>        
+        </div>
+        <div class="mb-3">
+            <div class="inputGroup login">
+                <input type="password" autocomplete="off" id="password" name="password" required="">
+                <label for="password">Password</label>
+                <p id="password-error" style="color: red;"></p>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="inputGroup login">
+                <input type="password" autocomplete="off" id="password" name="password" required="">
+                <label for="password">Confirm Password</label>
+            </div>>
+        </div>
+        <button class="btn btn-primary" type="submit">Log In</button>
+    </form>
+    <script>
+        const passwordInput = document.getElementById("password");
+        const passwordError = document.getElementById("password-error");
+
+        passwordInput.addEventListener("input", () => {
+            const password = passwordInput.value;
+            const containsNumber = /[0-9]/.test(password);
+            const containsCapital = /[A-Z]/.test(password);
+            const containsSymbol = /[,.-_]/.test(password);
+
+            let errorMessage = "";
+
+            if (!containsNumber) {
+                errorMessage += "Password must contain at least one number.\n";
+            }
+            if (!containsCapital) {
+                errorMessage += "Password must contain at least one capital letter.\n";
+            }
+            if (!containsSymbol) {
+                errorMessage += "Password must contain at least one symbol.\n";
+            }
+
+            passwordError.textContent = errorMessage;
+        });
+
+
+    </script>
+{% endblock %}

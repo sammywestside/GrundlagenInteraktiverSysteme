@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="card">
+            <h1 class="header"><span class="blue">H</span><span class="yellow">i</span><span class="red">s</span><span class="green">t</span><span class="blue">o</span><span class="yellow">r</span><span class="red">y</span></h1>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Amount</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in history %}
+                        <tr>
+                            <td>{{ transaction.symbol }}</td>
+                            <td>{{ transaction.type }}</td>
+                            <td>{{ transaction.price }}</td>
+                            <td>{{ transaction.shares }}</td>
+                            <td>{{ transaction.time}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

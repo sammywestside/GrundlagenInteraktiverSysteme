@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Qouted
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="card">
+            <h1 class="header"><span class="blue">S</span><span class="red">t</span><span class="green">o</span><span class="yellow">c</span><span class="blue">k</span> <span class="black">Prices</span></h1>
+            <form class="stocks_price">
+                <div class="inputGroup">
+                    <input autocomplete="off" autofocus id="symbol" name="symbol" type="text" required="">
+                    <label for="symbol">Symbol</label>
+                </div> 
+                <ul class="button-design">
+                    <li class="icon">
+                        <button type="submit" aria-label="Search" data-social="search">
+                            <div class="filled"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                              </svg>
+                              <div class="tooltip-text">Buy</div>
+                        </button>
+                    </li>
+                </ul>           
+            </form>
+        </div>
+        {% if quote %}
+        {% for item in quote %}
+            <h2>Quote for {{ item.name }}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Symbol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.price }}</td>
+                            <td>{{ item.symbol }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No data avaliable for the provided symbol. Please check your input.</p>
+        {% endif %}
+    </div>
+{% endblock %}

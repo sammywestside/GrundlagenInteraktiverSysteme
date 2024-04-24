@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Buying
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="card">
+            <h1 class="header"><span class="green">B</span><span class="yellow">u</span><span class="red">y</span> <span class="black">Stocks</span></h1>
+            <form action="/buy" method="POST" onsubmit="return validateNumber()">
+                <div class="inputGroup">
+                    <input type="text" autocomplete="off" id="symbol" name="symbol" required="">
+                    <label for="symbol">Symbol</label>
+                </div>
+                <div class="inputGroup">
+                    <input type="text" autocomplete="off" id="shares" name="shares" required="">
+                    <label for="shares">Shares</label>
+                </div>
+                <ul class="button-design">
+                    <li class="icon">
+                        <button class="sell" method="post" type="submit" aria-label="Buy" data-social="buy">
+                            <div class="filled"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">
+                                <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+                              </svg>
+                              <div class="tooltip-text">Buy</div>
+                        </button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+        {% if purchase %}
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Amount</th>
+                            <th>Price</th>
+                            <th>Time</th>
+                            <th>New Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ purchase_data.symbol }}</td>
+                            <td>{{ purchase_data.shares }}</td>
+                            <td>{{ purchase_data.price }}</td>
+                            <td>{{ purchase_data.timestamp }}</td>
+                            <td>{{ purchase_data.usd_balance }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+    <script>
+        function validateNUmber() {
+            var userInput = document.getElementById("shares").value;
+
+            if (userInput === "" || isNaN(userInput) || parseFloat(userInput) <= 0) {
+                alert("Please enter valid number.");
+                return false;
+            }
+
+            return true;
+        }
+
+    </script>
+{% endblock %}

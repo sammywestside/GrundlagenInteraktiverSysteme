@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quote
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="card">
+            <h1 class="header"><span class="blue">S</span><span class="green">t</span><span class="yellow">o</span><span class="red">c</span><span class="blue">k</span> <span class="black">Prices</span></h1>
+            <form method="POST" class="stocks_price">
+                <div class="inputGroup">
+                    <input autocomplete="off" autofocus id="symbol" name="symbol" type="text" required="">
+                    <label for="symbol">Symbol</label>
+                </div>
+                <ul class="button-design">
+                    <li class="icon">
+                        <button type="submit" aria-label="Search" data-social="search">
+                            <div class="filled"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                              </svg>
+                              <div class="tooltip-text">Buy</div>
+                        </button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+{% endblock %}
