@@ -1,0 +1,290 @@
+html {
+    height: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    height: 100%;
+}
+
+main {
+    height: 80%;
+}
+/* Size for brand */
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
+/* Colors for brand */
+.blue
+{
+    color: #537fbe;
+}
+.red
+{
+    color: #ea433b;
+}
+.yellow
+{
+    color: #f5b82e;
+}
+.green
+{
+    color: #2e944b;
+}
+.black
+{
+    color: #000;
+}
+
+.container-fluid.py-5 {
+    padding-top: 1rem !important;
+}
+
+.header {
+    font-size: 60px;
+    padding-bottom: .5rem;
+    color:#000;
+    letter-spacing: 1.5px;
+}
+
+.row {
+    background-color: #f1f1f1;
+    padding: 20px;
+    height: fit-content;
+}
+
+.card {
+    background-color: white;
+    padding: 20px;
+    margin: 20px 0px;
+}
+
+input.fsymbol_prices {
+    width: 100%;
+}
+
+h2 {
+    padding: 6px;
+}
+
+.row::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+table {
+    width: 100%;
+    background-color: #f1f1f1;
+    text-align: center;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+.empty-table {
+    font-size: 18px;
+    letter-spacing: 1px;
+    padding: 1em .5em;
+    text-align: center;
+}
+
+.trend-icon {
+    display: none;
+}
+
+form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.registration {
+    flex-direction: column;
+    width: 100%;
+}
+
+.inputGroup {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 1em 0 1em .5em;
+    max-width: 100px;
+    position: relative;
+}
+
+.inputGroup input {
+    font-size: 100%;
+    height: 90%;
+    padding: 0.8rem;
+    outline: none;
+    border: 2px solid rgb(200, 200, 200);
+    background-color: transparent;
+    border-radius: 20px;
+    width: 100%;
+}
+
+.inputGroup label {
+    font-size: 100%;
+    position: absolute;
+    left: 0;
+    padding: 0.6em;
+    margin-left: 0.5em;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    color: rgb(100, 100, 100);
+}
+
+.inputGroup :is(input:focus, input:valid)~label {
+    transform: translateY(-50%) scale(.8);
+    margin: 0em;
+    margin-left: 0.75em;
+    padding: 0.2em;
+    background-color: #e1e1e1;
+}
+  
+  .inputGroup :is(input:focus, input:valid) {
+    border-color: rgb(150, 150, 200);
+}
+
+.button-design {
+    list-style: none;
+}
+
+.icon::after {
+    content:"";
+    display: block;
+    height: 0px;
+    transition: height 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+.icon:hover::after {
+    height: 10px;
+}
+
+.button-design {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin-bottom: 5px;
+}
+
+.button-design .icon {
+    margin: 0 .5em;
+    position: relative;
+}
+
+.button-design .icon .tooltip-text {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 5px;
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    font-size: 14px;
+    transition: all 0.3s ease; 
+}
+
+.button-design .icon button:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    bottom: -40px;
+}
+
+.button-design .icon button {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid rgb(200, 200, 200);
+    color: rgb(100, 100, 100);
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+.button-design .icon button:hover {
+    box-shadow: 3px 2px 45px 0px rgb(0 0 0 / 12%);
+    border: 2px solid rgb(150, 150, 200);
+}
+
+.button-design .icon button svg {
+    position: relative;
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+}
+
+.button-design .icon button:hover {
+    color: white;
+}
+
+.button-design .icon button .filled {
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: #000;
+    transition: all 0.3s ease-in-out;
+}
+
+.button-design .icon button:hover .filled {
+    height: 100%;
+}
+
+.button-design .icon button[data-social="sell"] .filled,
+.button-design .icon button[data-social="sell"] ~ .tooltip {
+  background-color: #85bb65;
+}
+
+.button-design .icon button[data-social="buy"] .filled,
+.button-design .icon button[data-social="buy"] ~ .tooltip {
+  background-color: #ff5733;
+}
+
+.button-design .icon button[data-social="search"] .filled,
+.button-design .icon button[data-social="search"] ~ .tooltip {
+  background-color: #3377ff;
+}
+
+select.symbol {
+    width: 70%;
+    height: 2.75em;
+    margin: 10px 6px;
+    padding: 4px;
+    align-self: center;
+    cursor: pointer;
+    position: relative;
+    font-size: 16px;
+    border: 2px solid rgb(200, 200, 200);
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.login {
+    max-width: 100%;
+}
+
+.money {
+    font-size: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 1.5px;
+}
