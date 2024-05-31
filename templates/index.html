@@ -25,15 +25,20 @@
             {% else %}
                 {% for stock in stock_data %}
                     <tr>
-                        <td>{{ stock["symbol"] }}</td>
+                        <td class="stock-symbol">{{ stock["symbol"] }}</td>
                         <td>{{ stock["shares"] }}</td>
-                        <td>{{ stock["price"] }}</td>
+                        <td class="current-price">{{ stock["price"] }}</td>
                         <td class="stock-total">{{ stock["total"] }}</td>
-                        <td class="trend-icon"><svg class="upIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
-                          </svg><svg class="downIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-down-arrow" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 11.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-1 0v2.6l-3.613-4.417a.5.5 0 0 0-.74-.037L7.06 8.233 3.404 3.206a.5.5 0 0 0-.808.588l4 5.5a.5.5 0 0 0 .758.06l2.609-2.61L13.445 11H10.5a.5.5 0 0 0-.5.5"/>
-                          </svg></td>
+                        <td class="trend-icon">
+                            <svg class="upIcon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="green" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+                            </svg><svg class="downIcon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="red" class="bi bi-graph-down-arrow" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 11.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-1 0v2.6l-3.613-4.417a.5.5 0 0 0-.74-.037L7.06 8.233 3.404 3.206a.5.5 0 0 0-.808.588l4 5.5a.5.5 0 0 0 .758.06l2.609-2.61L13.445 11H10.5a.5.5 0 0 0-.5.5"/>
+                            </svg>
+                            <svg class="dashIcon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                              </svg>
+                        </td>
                     </tr>
                 {% endfor %}
             {% endif %}
@@ -88,74 +93,69 @@
     <hr>
     <p class="money">Cash Balance: {{ cash_balance }}</p>
     <p class="money" id="grand-total">Grand Total: </p>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const rows = document.querySelectorAll("#stock-table-body tr");
-        
-            rows.forEach(row => {
-                const totalCell = row.querySelector(".stock-total");
-                if (totalCell) {
-                    const totalValue = parseFloat(totalCell.textContent);
-                    const trendIconCell = row.querySelector(".trend-icon");
-                    const previousTotalValue = parseFloat(data.stock_total[index].previous_total_value);
-        
-                    if (totalValue > previousTotalValue) {
-                        trendIconCell.innerHTML = document.getElementById("upIcon").outerHTML;
-                    } else if (totalValue < previousTotalValue) {
-                        trendIconCell.innerHTML = document.getElementById("downIcon").outerHTML;
+        document.addEventListener('DOMContentLoaded', async function() {
+            const rows = document.querySelectorAll('#stock-table-body tr');
+            for (const row of rows) {
+                const symbolCell = row.querySelector('.stock-symbol');
+                if (symbolCell) {
+                    const symbol = symbolCell.textContent.trim();
+                    try {
+                        const response = await fetch(`http://localhost:3000/getStockPrice/${symbol}`);
+                        const data = await response.json();
+                        const currentPrice = data.currentPrice;
+                        console.log(`current price for ${symbol}:`, currentPrice);
+                        const previousPrice = data.previousPrice;
+                        console.log(`previous price for ${symbol}:`, previousPrice);
+
+                        const upIcon = row.querySelector('.upIcon');
+                        const downIcon = row.querySelector('.downIcon');
+                        const dashIcon = row.querySelector('.dashIcon');
+
+                        if (previousPrice !== null) {
+                            if(currentPrice > previousPrice) {
+                                upIcon.style.display = 'inline';
+                                downIcon.style.display = 'none';
+                                dashIcon.style.display = 'none';
+                            } else if (currentPrice < previousPrice) {
+                                upIcon.style.display = 'none';
+                                downIcon.style.display = 'inline';
+                                dashIcon.style.display = 'none';
+                            } else {
+                                upIcon.style.display = 'none';
+                                downIcon.style.display = 'none';
+                                dashIcon.style.display = 'inline';
+                            }
+                        } else {
+                            upIcon.style.display = 'none';
+                            downIcon.style.display = 'none';
+                            dashIcon.style.display = 'inline';
+                            
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching data for ${symbol}:`, error);
                     }
-        
-                    trendIconCell.style.display = "table-cell";
                 }
-            });
+            }
         });
-        
-        function fetchStockAndGrandTotal() {
-            $.ajax({
-                url: '/api/grand-total',
-                method: 'GET',
-                success: function(response) {
-                    const totalValueCells = document.querySelectorAll(".total-value");
-                    totalValueCells.forEach((cell, index) => {
-                        cell.textContent = response.stock_total[index].total_value;
-                    });
-        
-                    updateTrendIcons(response);
-        
-                    document.getElementById('grand-total').innerHTML = "Grand Total: " + response.grand_total;
-                    console.log(response.grand_total);
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error fetching stock and grand total: ", error);
+
+        async function fetchGrandTotal() {
+            try {
+                const response = await fetch('http://localhost:3000/grand-total');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            });
-        }
+                const data = await response.json();
+                const format = data.grandTotal.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+                var element = document.getElementById('grand-total');
+                element.innerHTML = `Grand Total: ${format}`;
+            } catch (error) {
+                console.error('Error fetching grand total: ', error);
+            }
+        } 
         
-        function updateTrendIcons(response) {
-            const rows = document.querySelectorAll("#stock-table-body tr");
-            rows.forEach((row, index) => {
-                const totalValueCell = row.querySelector(".stock-total");
-                if (totalValueCell) {
-                    const trendIconCell = row.querySelector(".trend-icon");
-                    const totalValue = parseFloat(totalValueCell.textContent);
-                    const previousTotalValue = parseFloat(response.stock_total[index].previous_total_value);
-        
-                    if (totalValue > previousTotalValue) {
-                        trendIconCell.innerHTML = document.getElementById("upIcon").outerHTML;
-                    } else if (totalValue < previousTotalValue) {
-                        trendIconCell.innerHTML = document.getElementById("downIcon").outerHTML;
-                    }
-        
-                    trendIconCell.style.display = "table-cell";
-                }
-            });
-        }
-        
-        fetchStockAndGrandTotal();
-        
-        $(document).ready(function() {
-            setInterval(fetchStockAndGrandTotal, 10000);
-        });        
+        setInterval(fetchGrandTotal, 10000);
+
+        fetchGrandTotal();
     </script>
 {% endblock %}
