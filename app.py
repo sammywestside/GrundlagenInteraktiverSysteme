@@ -44,12 +44,20 @@ def close_connection(exception):
 
 def query_db(query, args=(), one=False):
     try:
-        cur = get_db().execute(query, args)
+        if not isinstance(args, tuple):
+            args = (args,)
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute(query, args)
+
         if one:
             rv = cur.fetchone()
         else:
             rv = cur.fetchall()
         cur.close()
+
         return (rv[0] if rv else None) if one else rv
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -92,36 +100,6 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
-
-# @app.route('/api/grand-total')
-# def grand_total():
-#     try:
-#         total = 0
-
-#         stock_query = "SELECT symbol, shares FROM possesions WHERE user_id = ?"
-#         stock_results = query_db(stock_query, (session.get("user_id"),))
-
-#         if not stock_results:
-#             for entry in stock_results:
-#                 stock_data = lookup(entry)
-#                 symbol = stock_data["symbol"]
-#                 price = stock_data["price"]
-#                 shares = entry["shares"]
-#                 total += price * shares
-
-#         cash_query = "SELECT cash FROM users WHERE id = ?"
-#         cash = query_db(cash_query, (session.get("user_id"),))
-#         cash_value = cash[0][0] if cash else 0
-
-#         grand_total = cash_value + total
-#         grandtotal = usd(grand_total)
-#         total_value = usd(total)
-
-#         return jsonify({'grand_total' : grandtotal, 'total_value': total_value})
-#     except Exception as e:
-#         exc_type, exc_obj, exc_tb = sys.exc_info()
-#         print(f"An error occured on line: {exc_tb.tb_lineno}: {e}")
-#         return None
 
 def get_active_user():
     return session.get("user_id")
@@ -187,7 +165,6 @@ def buy():
             user_id = session.get("user_id")
             query_user = "SELECT cash FROM users WHERE id = ?"
             user_info = query_db(query_user, (user_id,))
-            print(user_info)
             cash_balance= user_info[0]["cash"]
 
             shares = int(fshares)
@@ -195,20 +172,22 @@ def buy():
             if stock_lookup is not None:
                 price_value = stock_lookup["price"]
                 stock_name = stock_lookup["name"]
+                stock_symbol = stock_lookup["symbol"]
             else:
                 return apology("Invalid Symbol", 400)
 
             total_price = price_value * shares
 
-            query_existing_stock = ("SELECT id FROM stocks WHERE symbol = ?", stock_lookup["symbol"])
-            existing_stock = query_db(query = query_existing_stock)
+            query_existing_stock = "SELECT id FROM stocks WHERE name = ?"
+            existing_stock = query_db(query=query_existing_stock, args=stock_name, one=True)
             if existing_stock:
-                stock_id = existing_stock[0]["id"]
+                stock_id = existing_stock
+                print(f"stock_id: {stock_id}")
             else:
-                max_stock_id = query_db(query = "SELECT MAX(id) AS max_id FROM stocks")
-                if max_stock_id[0]["max_id"] is not None:
-                    next_stock_id = max_stock_id[0]["max_id"] + 1
-                    print(next_stock_id)
+                max_stock_id = query_db(query = "SELECT MAX(id) AS max_id FROM stocks", one=True)
+                print(f"max_stock_id: {max_stock_id}")
+                if max_stock_id is not None:
+                    next_stock_id = max_stock_id + 1
                     stock_dict = {
                         'id' : next_stock_id,
                         'symbol': symbol,
@@ -240,13 +219,13 @@ def buy():
 
                 insert_query('transactions', transactions_dict)
                 # db_insert.execute("INSERT INTO transactions(user_id, stock_id, shares, price, timestamp, type, symbol) VALUES (?, ?, ?, ?, ?, ?, ?)", (user_id, stock_id, shares, total_price, timestamp, "buy", symbol))
-                query_exisiting_possesion = ("SELECT symbol FROM possesions WHERE stock_id = ?", (stock_id,))
-                existing_possesion = query_db(query=query_exisiting_possesion)
+                query_exisiting_possesion = "SELECT symbol FROM possesions WHERE stock_id = ?"
+                existing_possesion = query_db(query=query_exisiting_possesion, args=stock_id, one=True)
                 if existing_possesion:
-                    if existing_possesion[0]["symbol"] == symbol:
-                        query_possesion = ("SELECT shares FROM possesions WHERE stock_id = ?", (stock_id,))
-                        possesion_shares = query_db(query=query_possesion)
-                        new_shares = possesion_shares[0]["shares"] + shares
+                    if existing_possesion == symbol:
+                        query_possesion = "SELECT shares FROM possesions WHERE stock_id = ?"
+                        possesion_shares = query_db(query=query_possesion, args=stock_id, one=True)
+                        new_shares = possesion_shares + shares
                         get_db().execute("UPDATE possesions SET shares = ? WHERE stock_id = ?", (new_shares, stock_id))
                     else:
                         insert_query('possesions', posessions_dict)
@@ -481,10 +460,12 @@ def sell():
         
             query_posessions = ("SELECT SUM(shares) AS total_shares FROM possesions WHERE stock_id = ?")
             result = query_db(query=query_posessions, args=(stock_id,))
-            if result[0]['total_shares'] and result[0]['total_shares']:
-                current_shares = result[0]['total_shares']
+            # result = get_db().execute(query_posessions, stock_id)
+            current_shares = result[0]["total_shares"]
+            # if result[0]['total_shares'] and result[0]['total_shares']:
+            #     current_shares = result[0]['total_shares']
 
-            if current_shares >= shares:
+            if current_shares is not None and current_shares >= shares:
                 new_shares = current_shares - shares
                 print(new_shares)
                 if new_shares == 0:
@@ -493,7 +474,7 @@ def sell():
                     modify_db("UPDATE possesions SET shares = ? WHERE stock_id = ?", (new_shares, stock_id))
             else:
                 return apology("Invalid Number of Shares", 400)
-
+    
             new_balance = cash_balance + value
             modify_db("UPDATE users SET cash = ? WHERE id = ?", (new_balance, session.get("user_id")))
             success_message = "Successfully sold stocks"

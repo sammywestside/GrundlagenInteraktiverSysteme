@@ -101,11 +101,12 @@
                 if (symbolCell) {
                     const symbol = symbolCell.textContent.trim();
                     try {
+                        console.log(symbol)
                         const response = await fetch(`http://localhost:3000/getStockPrice/${symbol}`);
                         const data = await response.json();
                         const currentPrice = data.currentPrice;
                         console.log(`current price for ${symbol}:`, currentPrice);
-                        const previousPrice = data.previousPrice;
+                        const previousPrice = data.tempPrice;
                         console.log(`previous price for ${symbol}:`, previousPrice);
 
                         const upIcon = row.querySelector('.upIcon');

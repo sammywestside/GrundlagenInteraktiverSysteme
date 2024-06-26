@@ -85,7 +85,7 @@ table {
 }
 
 th, td {
-    text-align: left;
+    text-align: center;
     padding: 8px;
 }
 
@@ -94,10 +94,6 @@ th, td {
     letter-spacing: 1px;
     padding: 1em .5em;
     text-align: center;
-}
-
-.trend-icon {
-    display: none;
 }
 
 form {
@@ -287,4 +283,26 @@ select.symbol {
     font-size: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     letter-spacing: 1.5px;
+}
+
+.quote-table {
+    width: 50%;
+    align-self: center;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid #ddd;
+    margin: 1vh 0;
+    font-size: 2.2vh;
+}
+
+.quote-table-body {
+    text-align: center;
+    font-size: 2vh;
+    padding: 16px;
+}
+
+.quote-table-body tr:nth-child(odd), 
+.stock-table-body tr:nth-child(odd)
+.history-table-body tr:nth-child(odd) {
+    background-color: white;
 }
